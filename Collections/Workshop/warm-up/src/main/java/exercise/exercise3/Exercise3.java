@@ -41,6 +41,12 @@ public class Exercise3 {
         Set<String> treeSet = new TreeSet<String>(listToAdd);
         Set<String> linkedHashSet = new LinkedHashSet<String>(listToAdd);
 
+        Comparator<String> myComparator = new Comparator<String>() {
+            public int compare(String o1, String o2) {
+                return o1.length() - o2.length();
+            }
+        };
+
         // TODO Exercise #3 c) Check the content of the Sets
         System.out.println("\nThe elements contained in the first Set: ");
         System.out.println(hashSet.toString());
@@ -59,5 +65,10 @@ public class Exercise3 {
 
         // TODO Exercise #3 d) Add to the TreeSet two elements that already exist in the Set
         // TODO Exercise #3 d) and print again the TreeSet. What do you see?
+
+        TreeSet<String> myTreeSet = new TreeSet<String>(new MyComparator());
+        myTreeSet.addAll(listToAdd);
+        System.out.println("\nThe elements contained in the TreeSet with custom comparator: ");
+        System.out.println(myTreeSet.toString());
     }
 }
