@@ -15,7 +15,7 @@ public class Department {
     @Column(name = "department_name")
     private String departmentName;
     @Column(name = "location_id")
-    private Location location;
+    private Integer location;
 
     public Long getId() {
         return id;
@@ -33,11 +33,11 @@ public class Department {
         this.departmentName = departmentName;
     }
 
-    public Location getLocation() {
+    public Integer getLocation() {
         return location;
     }
 
-    public void setLocation(Location location) {
+    public void setLocation(Integer location) {
         this.location = location;
     }
 

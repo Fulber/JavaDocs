@@ -21,14 +21,14 @@ public class QueryBuilder {
         if (value.getClass() == Date.class) {
 
             DateFormat dateFormat = new SimpleDateFormat("mm/dd/yyyy");
-            return "TO_DATE('" + dateFormat.format((Date) value) + "','mm-dd-YYYY'";
+            return "TO_DATE('" + dateFormat.format((Date) value) + "','dd/mm/YYYY')";
         }
-        if (value.getClass() == String.class) {
+        /*if (value.getClass() == String.class) {
 
             String string = (String) value;
             return string.substring(string.indexOf("'") + 1, string.indexOf("'"));
-        }
-        return "";
+        }*/
+        return value.toString();
     }
 
     public QueryBuilder addCondition(Condition condition) {
@@ -60,25 +60,23 @@ public class QueryBuilder {
         StringBuilder queryBuilder = new StringBuilder();
 
         queryBuilder.append("SELECT ");
-        for (ColumnInfo columnInfo : queryColumns) {
+        for (ColumnInfo columnInfo : this.queryColumns) {
             queryBuilder.append(columnInfo.getDbName() + ",");
         }
         queryBuilder.deleteCharAt(queryBuilder.length() - 1);
 
         queryBuilder.append(" FROM ");
-        queryBuilder.append(EntityUtils.getTableName(tableName.getClass()));
+        queryBuilder.append(EntityUtils.getTableName(this.tableName.getClass()));
 
-        if (conditions.isEmpty()) {
-            queryBuilder.append(";");
+        if (this.conditions.isEmpty()) {
             return queryBuilder.toString();
         }
 
         queryBuilder.append(" WHERE ");
-        for (Condition condition : conditions) {
+        for (Condition condition : this.conditions) {
             queryBuilder.append(condition.getColumnName() + "=" + getValueForQuery(condition.getValue()) + " AND ");
         }
         queryBuilder.delete(queryBuilder.length() - 6, queryBuilder.length() - 1);
-        queryBuilder.append(";");
 
         return queryBuilder.toString();
     }
@@ -88,19 +86,17 @@ public class QueryBuilder {
         StringBuilder queryBuilder = new StringBuilder();
 
         queryBuilder.append("DELETE FROM");
-        queryBuilder.append(EntityUtils.getTableName(tableName.getClass()));
+        queryBuilder.append(EntityUtils.getTableName(this.tableName.getClass()));
 
-        if (conditions.isEmpty()) {
-            queryBuilder.append(";");
+        if (this.conditions.isEmpty()) {
             return queryBuilder.toString();
         }
 
         queryBuilder.append(" WHERE ");
-        for (Condition condition : conditions) {
+        for (Condition condition : this.conditions) {
             queryBuilder.append(condition.getColumnName() + "=" + getValueForQuery(condition.getValue()) + " AND ");
         }
         queryBuilder.delete(queryBuilder.length() - 6, queryBuilder.length() - 1);
-        queryBuilder.append(";");
 
         return queryBuilder.toString();
     }
@@ -110,25 +106,23 @@ public class QueryBuilder {
         StringBuilder queryBuilder = new StringBuilder();
 
         queryBuilder.append("UPDATE ");
-        queryBuilder.append(EntityUtils.getTableName(tableName.getClass()));
+        queryBuilder.append(EntityUtils.getTableName(this.tableName.getClass()));
         queryBuilder.append(" SET ");
 
-        for (ColumnInfo columnInfo : queryColumns) {
+        for (ColumnInfo columnInfo : this.queryColumns) {
             queryBuilder.append(columnInfo.getDbName() + "=" + getValueForQuery(columnInfo.getValue()) + ",");
         }
         queryBuilder.deleteCharAt(queryBuilder.length() - 1);
 
-        if (conditions.isEmpty()) {
-            queryBuilder.append(";");
+        if (this.conditions.isEmpty()) {
             return queryBuilder.toString();
         }
 
         queryBuilder.append(" WHERE ");
-        for (Condition condition : conditions) {
+        for (Condition condition : this.conditions) {
             queryBuilder.append(condition.getColumnName() + "=" + getValueForQuery(condition.getValue()) + " AND ");
         }
         queryBuilder.delete(queryBuilder.length() - 5, queryBuilder.length() - 1);
-        queryBuilder.append(";");
 
         return queryBuilder.toString();
     }
@@ -138,27 +132,27 @@ public class QueryBuilder {
         StringBuilder queryBuilder = new StringBuilder();
 
         queryBuilder.append("INSERT INTO ");
-        queryBuilder.append(EntityUtils.getTableName(tableName.getClass()));
+        queryBuilder.append(EntityUtils.getTableName(this.tableName.getClass()));
 
         queryBuilder.append(" (");
-        for (ColumnInfo columnInfo : queryColumns) {
+        for (ColumnInfo columnInfo : this.queryColumns) {
             queryBuilder.append(columnInfo.getDbName() + ",");
         }
         queryBuilder.deleteCharAt(queryBuilder.length() - 1);
         queryBuilder.append(") VALUES (");
 
-        for (ColumnInfo columnInfo : queryColumns) {
+        for (ColumnInfo columnInfo : this.queryColumns) {
             queryBuilder.append(getValueForQuery(columnInfo.getValue()) + ",");
         }
         queryBuilder.deleteCharAt(queryBuilder.length() - 1);
-        queryBuilder.append(");");
+        queryBuilder.append(")");
 
         return queryBuilder.toString();
     }
 
     public String createQuery() {
 
-        switch (queryType) {
+        switch (this.queryType) {
             case SELECT:
                 return createSelectQuery();
             case DELETE:

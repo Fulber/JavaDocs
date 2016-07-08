@@ -28,7 +28,7 @@ public class Employee {
     private String jobId;
     @Column(name = "salary")
     private Long salary;
-    @Column(name = "commision_pct")
+    @Column(name = "commission_pct")
     private Long commisionPct;
     @Column(name = "manager_id")
     private Long managerId;

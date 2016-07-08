@@ -42,6 +42,10 @@ public class EntityUtilsTest {
 
     @Test
     public void testGetSqlValueMethod() {
-        assertEquals("Class of field with Id annotation should be Long", Long.class, EntityUtils.getSqlValue(new Department()).getClass());
+        try {
+            assertEquals("Class of field with Id annotation should be Long", Long.class, EntityUtils.getSqlValue(new Department()).getClass());
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
     }
 }
