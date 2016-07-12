@@ -6,7 +6,7 @@ import ro.teamnet.zth.appl.domain.Employee;
 import ro.teamnet.zth.appl.domain.Job;
 import ro.teamnet.zth.appl.domain.Location;
 
-import java.util.Date;
+import java.util.HashMap;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -30,7 +30,7 @@ public class EntityManagerImplTest {
         expected.setId((long) 20);
         expected.setLocation(1800);
 
-        assertEquals("test", expected, manager.findById(Department.class, (long) 200));
+        assertEquals("test", expected, manager.findById(Department.class, (long) 20));
     }
 
     @Test
@@ -49,5 +49,35 @@ public class EntityManagerImplTest {
         toBeInserted.setStreetAddress("'kek'");
 
         assertNotNull(manager.insert(toBeInserted));
+    }
+
+    @Test
+    public void testDeleteMethod() {
+        Location toBeInserted = new Location();
+        toBeInserted.setId((long) 3201);
+
+        manager.delete(toBeInserted);
+    }
+
+    @Test
+    public void testUpdateMethod() {
+        Location toBeUpdated = new Location();
+        toBeUpdated.setId(3202);
+        toBeUpdated.setCity("'Lol'");
+        toBeUpdated.setPostalCode("'Lol'");
+        toBeUpdated.setStateProvince("'Lol'");
+        toBeUpdated.setStreetAddress("'Lol'");
+        manager.update(toBeUpdated);
+
+    }
+
+    @Test
+    public void testFindByParamsMethod() {
+
+        HashMap<String, Object> params = new HashMap<>();
+        params.put("phone_number","'011.44.1344.129268'");
+        params.put("salary", (long) 10000);
+
+        assertEquals("test", 1, manager.findByParams(Employee.class, params).size());
     }
 }

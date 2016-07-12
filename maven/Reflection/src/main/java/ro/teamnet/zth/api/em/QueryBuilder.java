@@ -76,7 +76,7 @@ public class QueryBuilder {
         for (Condition condition : this.conditions) {
             queryBuilder.append(condition.getColumnName() + "=" + getValueForQuery(condition.getValue()) + " AND ");
         }
-        queryBuilder.delete(queryBuilder.length() - 6, queryBuilder.length() - 1);
+        queryBuilder.delete(queryBuilder.length() - 5, queryBuilder.length() - 1);
 
         return queryBuilder.toString();
     }
@@ -96,7 +96,7 @@ public class QueryBuilder {
         for (Condition condition : this.conditions) {
             queryBuilder.append(condition.getColumnName() + "=" + getValueForQuery(condition.getValue()) + " AND ");
         }
-        queryBuilder.delete(queryBuilder.length() - 6, queryBuilder.length() - 1);
+        queryBuilder.delete(queryBuilder.length() - 5, queryBuilder.length() - 1);
 
         return queryBuilder.toString();
     }
