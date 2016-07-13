@@ -173,13 +173,12 @@ public class EntityManagerImpl implements EntityManager {
             String sql = query.createQuery();
             ResultSet rs = stmt.executeQuery(sql);
 
-            T instance = entityClass.newInstance();
             while (rs.next()) {
+                T instance = entityClass.newInstance();
                 for (ColumnInfo column : columns) {
-                    column.setValue(rs.getObject(column.getDbName()));
                     Field field = instance.getClass().getDeclaredField(column.getColumnName());
                     field.setAccessible(true);
-                    field.set(instance, EntityUtils.castFromSqlType(column.getValue(), column.getColumnType()));
+                    field.set(instance, EntityUtils.castFromSqlType(rs.getObject(column.getDbName()), column.getColumnType()));
                 }
                 rows.add(instance);
             }

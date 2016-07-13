@@ -6,9 +6,9 @@ import java.util.List;
 public class QueryBuilder {
 
     private Object tableName;
-    private List<ColumnInfo> queryColumns;
+    private List<ColumnInfo> queryColumns = new ArrayList<>();
     private QueryType queryType;
-    private List<Condition> conditions;
+    private List<Condition> conditions = new ArrayList<>();
 
     /**
      * Create QueryBuilder object
