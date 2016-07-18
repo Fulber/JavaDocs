@@ -1,6 +1,7 @@
 package ro.teamnet.zth;
 
 import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.map.deser.std.ClassDeserializer;
 import ro.teamnet.zth.api.annotations.MyController;
 import ro.teamnet.zth.api.annotations.MyRequestMethod;
 import ro.teamnet.zth.api.annotations.MyRequestParam;
@@ -12,6 +13,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
@@ -28,13 +30,13 @@ public class DispatcherServlet extends HttpServlet {
      * key: urlPath
      * val: method info
      */
-    HashMap<String, MethodAttributes> allowedMethods = new HashMap<>();
+    private HashMap<String, MethodAttributes> allowedMethods = new HashMap<>();
 
     @Override
     public void init() throws ServletException {
 
         try {
-            Iterable<Class> classes = AnnotationScanUtils.getClasses("ro.teamnet.zth.appl.controller");
+            Iterable<Class> classes = AnnotationScanUtils.getClasses("ro.teamnet.zth.appl");
             for (Class controller : classes) {
                 if (controller.isAnnotationPresent(MyController.class)) {
                     MyController myController = (MyController) controller.getAnnotation(MyController.class);
@@ -76,6 +78,11 @@ public class DispatcherServlet extends HttpServlet {
     }
 
     @Override
+    protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        dispatchReply("PUT", req, resp);
+    }
+
+    @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         dispatchReply("DELETE", req, resp);
     }
@@ -103,7 +110,13 @@ public class DispatcherServlet extends HttpServlet {
         for (Parameter parameter : parameters) {
             if (parameter.isAnnotationPresent(MyRequestParam.class)) {
                 String parameterName = parameter.getAnnotation(MyRequestParam.class).name();
-                args.add(new ObjectMapper().readValue(req.getParameter(parameterName), parameter.getType()));
+
+                if (parameterName.equals("id")) {
+                    args.add(new ObjectMapper().readValue(req.getParameter(parameterName), parameter.getType()));
+                } else {
+                    String jsonString = req.getReader().readLine();
+                    args.add(new ObjectMapper().readValue(jsonString, parameter.getType()));
+                }
             }
         }
         return method.invoke(controller, args.toArray());
